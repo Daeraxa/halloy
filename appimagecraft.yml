@@ -1,8 +1,9 @@
 version: 1
 
 project:
-  name: com.my.halloytest
-  version: 0.0.1
+  name: org.squidowl.halloy
+  # version: 0.1.0
+  version_command: awk -F'[ ="]+' '$1 == "version" { print $2;exit;}' "$PROJECT_ROOT"/Cargo.toml
 
 build:
   script:
@@ -12,16 +13,20 @@ build:
 scripts:
   post_build:
     - |2
-      cat > "$BUILD_DIR"/example.desktop <<EOF
+      cat > "$BUILD_DIR"/halloy.desktop <<EOF
       [Desktop Entry]
-      Name=HalloyTest
+      Name=Halloy
+      Comment=IRC client written in Rust
       Type=Application
-      Terminal=false
-      Categories=Utility;
+      Keywords=IM,Chat;
+      Categories=Network;IRCClient;
       Exec=halloy
       Icon=logo
+      StartupWMClass=halloy
+      MimeType=x-scheme-handler/irc;x-scheme-handler/ircs;
+      Terminal=false
       EOF
 
 appimage:
   linuxdeploy:
-    extra_args: -d "$BUILD_DIR"/example.desktop -e "$PROJECT_ROOT"/target/release/halloy -i "$PROJECT_ROOT"/assets/linux/512/logo.png -i "$PROJECT_ROOT"/assets/linux/256/logo.png -i "$PROJECT_ROOT"/assets/linux/128/logo.png
+    extra_args: -d "$BUILD_DIR"/halloy.desktop -e "$PROJECT_ROOT"/target/release/halloy -i "$PROJECT_ROOT"/assets/linux/512/logo.png -i "$PROJECT_ROOT"/assets/linux/256/logo.png -i "$PROJECT_ROOT"/assets/linux/128/logo.png
