@@ -1,0 +1,27 @@
+version: 1
+
+project:
+  name: com.my.halloytest
+  version: 0.0.1
+
+build:
+  script:
+    commands:
+      - cargo build --release
+
+scripts:
+  post_build:
+    - |2
+      cat > "$BUILD_DIR"/example.desktop <<EOF
+      [Desktop Entry]
+      Name=HalloyTest
+      Type=Application
+      Terminal=false
+      Categories=Utility;
+      Exec=halloy
+      Icon=logo
+      EOF
+
+appimage:
+  linuxdeploy:
+    extra_args: -d "$BUILD_DIR"/example.desktop -e "$PROJECT_ROOT"/target/release/halloy -i "$PROJECT_ROOT"/assets/linux/512/logo.png -i "$PROJECT_ROOT"/assets/linux/256/logo.png -i "$PROJECT_ROOT"/assets/linux/128/logo.png
